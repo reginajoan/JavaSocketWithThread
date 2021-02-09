@@ -12,7 +12,7 @@ public class FailOverSocket {
             public void run() {
                 try {
                     ServerSocket ss = new ServerSocket(9000);
-                    do {
+                    //do {
                         System.out.println("Waiting Transaction ..");
                         Socket clientSocket = ss.accept();
                         clientSocket.setKeepAlive(true);
@@ -23,12 +23,15 @@ public class FailOverSocket {
                         int bytes;
                         data = new byte[clientSocket.getInputStream().available()];
                         bytes = clientSocket.getInputStream().read(data,0,data.length);
-                        String dataDB = new String(data, 0, bytes, "UTF-8");
+                        String dataDB = new String(data, 0, bytes, "ASCII");
                         System.out.println(dataDB);
                         String dataFromHobis = getFromServer(dataDB);
                         System.out.println("data from hobis " + dataFromHobis);
-                        clientSocket.getOutputStream().write(dataFromHobis.getBytes("UTF-8"));
-                    } while (true);
+                        if(dataFromHobis != null){
+                            clientSocket.getOutputStream().write(dataFromHobis.getBytes("ASCII"));
+                        }
+
+                    //} while (true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
