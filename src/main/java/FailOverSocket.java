@@ -8,7 +8,7 @@ public class FailOverSocket {
 
                 try {
                     ServerSocket ss = new ServerSocket(9000);
-                    //do {
+                    do {
                         System.out.println("Waiting Transaction ..");
                         Socket clientSocket = ss.accept();
                         clientSocket.setKeepAlive(true);
@@ -26,7 +26,7 @@ public class FailOverSocket {
                         if(dataFromHobis != null){
                             clientSocket.getOutputStream().write(dataFromHobis.getBytes("ASCII"));
                         }
-                    //} while (true);
+                    } while (true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
