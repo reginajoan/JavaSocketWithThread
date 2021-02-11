@@ -1,8 +1,5 @@
-import java.io.*;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.concurrent.*;
 public class FailOverSocket {
     private static boolean flag = false;
@@ -30,7 +27,6 @@ public class FailOverSocket {
                         if(dataFromHobis != null){
                             clientSocket.getOutputStream().write(dataFromHobis.getBytes("ASCII"));
                         }
-
                     //} while (true);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -62,7 +58,6 @@ public class FailOverSocket {
         try {
             System.out.println("Server 1 running");
             System.out.println("Started..");
-            //System.out.println(future.get(5, TimeUnit.SECONDS));
             getFromHli = future.get(timeout, TimeUnit.SECONDS);
             System.out.println("Finished!");
             flag = true;

@@ -5,8 +5,8 @@ import java.net.Socket;
 import java.util.concurrent.Callable;
 
 class Task1 implements Callable<String> {
-    private static String host = "172.16.1.243";
-    private static int port = 9400;
+    private static String host = "192.168.88.98";
+    private static int port = 1212;
     private static String dataDB;
     private static Socket clientSocket = null;
     public Task1(String dataDB){
@@ -71,7 +71,6 @@ class Task1 implements Callable<String> {
         }
         return data;
     }
-
     public static String SendAndGetFromHLI(String dataDB){
         String print = "";
         System.out.println("Send data to server : "+dataDB);
