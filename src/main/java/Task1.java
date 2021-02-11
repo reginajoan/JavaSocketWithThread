@@ -99,6 +99,7 @@ class Task1 implements Callable<String> {
             int bytes = clientSocket.getInputStream().read(data, 0, data.length);
             print = new String(data, 0, bytes, "ASCII");//.substring(4,bytes);
             System.out.println("from server : "+print);
+            dataDB = "";
             return print;
         } catch (IOException ex) {
             return ex.getMessage();

@@ -5,7 +5,6 @@ public class FailOverSocket {
     private static boolean flag = false;
 
     public static void main(String[] args) throws Exception {
-
                 try {
                     ServerSocket ss = new ServerSocket(9000);
                     do {
@@ -22,7 +21,7 @@ public class FailOverSocket {
                         String dataDB = new String(data, 0, bytes, "ASCII");
                         System.out.println(dataDB);
                         String dataFromHobis = getFromServer(dataDB);
-                        System.out.println("data from hobis " + dataFromHobis);
+                        //System.out.println("data from hobis " + dataFromHobis);
                         if(dataFromHobis != null){
                             clientSocket.getOutputStream().write(dataFromHobis.getBytes("ASCII"));
                         }
