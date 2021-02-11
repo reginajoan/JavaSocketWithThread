@@ -61,7 +61,7 @@ public class FailOverSocket {
             getFromHli = future.get(timeout, TimeUnit.SECONDS);
             System.out.println("Finished!");
             flag = true;
-            executor.shutdownNow();
+            //executor.shutdownNow();
             return getFromHli;
         } catch (Exception e) {
             future.cancel(true);
@@ -83,7 +83,7 @@ public class FailOverSocket {
             getFromHli = future.get(timeout, TimeUnit.SECONDS);
             System.out.println("Finished!");
             flag = true;
-            executor.shutdownNow();
+            //executor.shutdownNow();
             return getFromHli;
         } catch (Exception e) {
             future.cancel(true);
