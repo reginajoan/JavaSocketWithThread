@@ -1,7 +1,7 @@
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.*;
-public class FailOverSocket {
+public class FailOverSocket{
     private static boolean flag = false;
 
     public static void main(String[] args) throws Exception {
@@ -32,11 +32,43 @@ public class FailOverSocket {
                 }
 
          */
+        while (true){
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
 
+                    try {
+                        ServerSocket ss = new ServerSocket(9000);
+                        //do {
+                            System.out.println("Waiting Transaction ..");
+                            Socket clientSocket = ss.accept();
+                            clientSocket.setKeepAlive(true);
+                            while (clientSocket.getInputStream().available() == 0) {
+                                Thread.sleep(100L);
+                            }
+                            byte[] data;
+                            int bytes;
+                            data = new byte[clientSocket.getInputStream().available()];
+                            bytes = clientSocket.getInputStream().read(data,0,data.length);
+                            String dataDB = new String(data, 0, bytes, "ASCII");
+                            System.out.println(dataDB);
+                            String dataFromHobis = getFromServer(dataDB);
+                            //System.out.println("data from hobis " + dataFromHobis);
+                            if(dataFromHobis != null){
+                                clientSocket.getOutputStream().write(dataFromHobis.getBytes("ASCII"));
+                            }
+                        //} while (true);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            t.start();
+        }
 
-        String dataDB = "138ATMDBALINQ60110220002004844602211520018992  20200615103601000133001400002508  NBALHNBIDR    OA                484                                                                                                         4602211520018992=1225                                                                                                                                                                       0CECDB747795EE83                                                           20200615103601                                                        MAGSTRIPE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          -SendAdToHLI\"";
-        dataDB = "0957ATMDPRLOAN60110220002004844602211520018992  20200615103547000133005400000133  NGTLNAP6064201240152425    7303AAA13481D50C                                                                                                                                                                                                                                                                                                                                                                        20200615103547                                                                                                                                                                                                                                                                                                                                                                                                                                                             -SendAdToHLI\"";
-        getFromServer(dataDB);
+        //String dataDB = "138ATMDBALINQ60110220002004844602211520018992  20200615103601000133001400002508  NBALHNBIDR    OA                484                                                                                                         4602211520018992=1225                                                                                                                                                                       0CECDB747795EE83                                                           20200615103601                                                        MAGSTRIPE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          -SendAdToHLI\"";
+        //dataDB = "0957ATMDPRLOAN60110220002004844602211520018992  20200615103547000133005400000133  NGTLNAP6064201240152425    7303AAA13481D50C                                                                                                                                                                                                                                                                                                                                                                        20200615103547                                                                                                                                                                                                                                                                                                                                                                                                                                                             -SendAdToHLI\"";
+        //getFromServer(dataDB);
     }
 
     public static String getFromServer(String dataDB) throws Exception {
@@ -64,7 +96,7 @@ public class FailOverSocket {
             getFromHli = future.get(timeout, TimeUnit.SECONDS);
             System.out.println("Finished!");
             flag = true;
-            //executor.shutdownNow();
+            executor.shutdownNow();
             return getFromHli;
         } catch (Exception e) {
             future.cancel(true);
@@ -97,3 +129,4 @@ public class FailOverSocket {
         }
     }
 }
+
