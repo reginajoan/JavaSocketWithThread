@@ -32,6 +32,7 @@ class Task1 implements Callable<String> {
             in = new DataInputStream(clientSocket.getInputStream());
             out = new DataOutputStream(clientSocket.getOutputStream());
 
+            /*
             Thread thread = new Thread(){
                 String msg = "";
                 public void run() {
@@ -50,6 +51,20 @@ class Task1 implements Callable<String> {
                 }
             };
             thread.start();
+             */
+            String msg = "";
+            while(connected){
+                try {
+                    msg = in.readUTF();
+                    System.out.println(msg);
+                    data = msg;
+                }catch(IOException e){
+                    connected = false;
+                    System.out.println("Reconnecting...");
+                    while(!connected)
+                        connect(server, port);
+                }
+            }
         }catch (Exception e){
             connected = false;
         }
