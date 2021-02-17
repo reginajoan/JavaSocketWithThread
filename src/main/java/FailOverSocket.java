@@ -1,11 +1,14 @@
+import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.concurrent.*;
 public class FailOverSocket{
     private static boolean flag = false;
 
     public static void main(String[] args) throws Exception {
-        /*
+
         try {
                     ServerSocket ss = new ServerSocket(9000);
                     do {
@@ -21,7 +24,9 @@ public class FailOverSocket{
                         bytes = clientSocket.getInputStream().read(data,0,data.length);
                         String dataDB = new String(data, 0, bytes, "ASCII");
                         System.out.println(dataDB);
+                        sendPingRequest("172.16.1.243");
                         String dataFromHobis = getFromServer(dataDB);
+
                         //System.out.println("data from hobis " + dataFromHobis);
                         if(dataFromHobis != null){
                             clientSocket.getOutputStream().write(dataFromHobis.getBytes("ASCII"));
@@ -30,8 +35,7 @@ public class FailOverSocket{
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-         */
+        /*
             Thread t = new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -64,10 +68,13 @@ public class FailOverSocket{
             });
             t.start();
 
+         */
+
         //String dataDB = "138ATMDBALINQ60110220002004844602211520018992  20200615103601000133001400002508  NBALHNBIDR    OA                484                                                                                                         4602211520018992=1225                                                                                                                                                                       0CECDB747795EE83                                                           20200615103601                                                        MAGSTRIPE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          -SendAdToHLI\"";
         //dataDB = "0957ATMDPRLOAN60110220002004844602211520018992  20200615103547000133005400000133  NGTLNAP6064201240152425    7303AAA13481D50C                                                                                                                                                                                                                                                                                                                                                                        20200615103547                                                                                                                                                                                                                                                                                                                                                                                                                                                             -SendAdToHLI\"";
         //getFromServer(dataDB);
     }
+
 
     public static String getFromServer(String dataDB) throws Exception {
         final int timeout = 10;
@@ -125,6 +132,16 @@ public class FailOverSocket{
             executor.shutdownNow();
             return e.getMessage();
         }
+    }
+    public static void sendPingRequest(String ipAddress)
+            throws UnknownHostException, IOException
+    {
+        InetAddress geek = InetAddress.getByName(ipAddress);
+        System.out.println("Sending Ping Request to " + ipAddress);
+        if (geek.isReachable(5000))
+            System.out.println("Host is reachable");
+        else
+            System.out.println("Sorry ! We can't reach to this host");
     }
 }
 

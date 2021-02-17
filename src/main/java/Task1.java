@@ -9,14 +9,15 @@ class Task1 implements Callable<String> {
     private static int port = 1212;
     private static String dataDB;
     private static Socket clientSocket = null;
+    private static String server = null;
+    private static boolean connected = false;
+    private static DataInputStream in = null;
+    private static DataOutputStream out = null;
+    private static String data = null;
+
     public Task1(String dataDB){
         this.dataDB = dataDB;
     }
-    static String server = null;
-    static boolean connected = false;
-    static DataInputStream in = null;
-    static DataOutputStream out = null;
-    static String data = null;
 
     @Override
     public String call() {
