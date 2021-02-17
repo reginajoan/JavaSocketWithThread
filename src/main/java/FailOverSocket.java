@@ -23,7 +23,14 @@ public class FailOverSocket{
                     data = new byte[clientSocket.getInputStream().available()];
                     bytes = clientSocket.getInputStream().read(data,0,data.length);
                     String dataDB = new String(data, 0, bytes, "UTF-8");
-                    System.out.println(dataDB);
+                    System.out.println("length before : " + dataDB.length());
+                    if(dataDB.equals("1373ATMDBALINQ")){
+                        while(dataDB.length() <= 1373){
+                            dataDB += " ";
+                        }
+                        continue;
+                    }
+                    System.out.println("length after : " + dataDB.length());
                     sendPingRequest("172.16.1.243");
                     String dataFromHobis = getFromServer(dataDB);
 
