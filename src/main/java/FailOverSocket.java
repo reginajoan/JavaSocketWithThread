@@ -8,7 +8,7 @@ public class FailOverSocket{
     private static boolean flag = false;
 
     public static void main(String[] args) throws Exception {
-        ServerSocket ss = new ServerSocket(9000);
+        /*ServerSocket ss = new ServerSocket(9000);
         try {
             while(true) {
                 System.out.println("Waiting Transaction ..");
@@ -77,9 +77,9 @@ public class FailOverSocket{
 
          */
 
-        //String dataDB = "138ATMDBALINQ60110220002004844602211520018992  20200615103601000133001400002508  NBALHNBIDR    OA                484                                                                                                         4602211520018992=1225                                                                                                                                                                       0CECDB747795EE83                                                           20200615103601                                                        MAGSTRIPE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          -SendAdToHLI\"";
-        //dataDB = "0957ATMDPRLOAN60110220002004844602211520018992  20200615103547000133005400000133  NGTLNAP6064201240152425    7303AAA13481D50C                                                                                                                                                                                                                                                                                                                                                                        20200615103547                                                                                                                                                                                                                                                                                                                                                                                                                                                             -SendAdToHLI\"";
-        //getFromServer(dataDB);
+        String dataDB = "138ATMDBALINQ60110220002004844602211520018992  20200615103601000133001400002508  NBALHNBIDR    OA                484                                                                                                         4602211520018992=1225                                                                                                                                                                       0CECDB747795EE83                                                           20200615103601                                                        MAGSTRIPE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          -SendAdToHLI\"";
+        dataDB = "0957ATMDPRLOAN60110220002004844602211520018992  20200615103547000133005400000133  NGTLNAP6064201240152425    7303AAA13481D50C                                                                                                                                                                                                                                                                                                                                                                        20200615103547                                                                                                                                                                                                                                                                                                                                                                                                                                                             -SendAdToHLI\"";
+        getFromServer(dataDB);
     }
 
 
@@ -100,7 +100,7 @@ public class FailOverSocket{
     public static String RunningProgram(String dataDB, int timeout) throws Exception{
         String getFromHli = "";
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        Future<String> future = executor.submit(new Task(dataDB));
+        Future<String> future = executor.submit(new Task1(dataDB));
 
         try {
             System.out.println("Server 1 running");
@@ -122,7 +122,8 @@ public class FailOverSocket{
         String getFromHli = "";
         ExecutorService executor = Executors.newSingleThreadExecutor();
         //Executors.
-        Future<String> future = executor.submit(new Task1(dataDB));
+        System.out.println("send to hobis : "+dataDB);
+        Future<String> future = executor.submit(new Task(dataDB));
         try {
             System.out.println("Server 2 running");
             System.out.println("Started..");
@@ -151,4 +152,3 @@ public class FailOverSocket{
             System.out.println("Sorry ! We can't reach to this host");
     }
 }
-
