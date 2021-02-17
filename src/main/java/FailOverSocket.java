@@ -8,33 +8,40 @@ public class FailOverSocket{
     private static boolean flag = false;
 
     public static void main(String[] args) throws Exception {
-
+        ServerSocket ss = new ServerSocket(9000);
         try {
-                    ServerSocket ss = new ServerSocket(9000);
-                    do {
-                        System.out.println("Waiting Transaction ..");
-                        Socket clientSocket = ss.accept();
-                        clientSocket.setKeepAlive(true);
-                        while (clientSocket.getInputStream().available() == 0) {
-                            Thread.sleep(100L);
-                        }
-                        byte[] data;
-                        int bytes;
-                        data = new byte[clientSocket.getInputStream().available()];
-                        bytes = clientSocket.getInputStream().read(data,0,data.length);
-                        String dataDB = new String(data, 0, bytes, "ASCII");
-                        System.out.println(dataDB);
-                        sendPingRequest("172.16.1.243");
-                        String dataFromHobis = getFromServer(dataDB);
+            while(true) {
+                System.out.println("Waiting Transaction ..");
+                Socket clientSocket = ss.accept();
+                clientSocket.setKeepAlive(true);
+                try{
+                    while (clientSocket.getInputStream().available() == 0) {
+                        Thread.sleep(100L);
+                    }
+                    byte[] data;
+                    int bytes;
+                    data = new byte[clientSocket.getInputStream().available()];
+                    bytes = clientSocket.getInputStream().read(data,0,data.length);
+                    String dataDB = new String(data, 0, bytes, "ASCII");
+                    System.out.println(dataDB);
+                    sendPingRequest("172.16.1.243");
+                    String dataFromHobis = getFromServer(dataDB);
 
-                        //System.out.println("data from hobis " + dataFromHobis);
-                        if(dataFromHobis != null){
-                            clientSocket.getOutputStream().write(dataFromHobis.getBytes("ASCII"));
-                        }
-                    } while (true);
-                } catch (Exception e) {
+                    //System.out.println("data from hobis " + dataFromHobis);
+                    if(dataFromHobis != null){
+                        clientSocket.getOutputStream().write(dataFromHobis.getBytes("ASCII"));
+                    }
+                }catch(Exception e){
                     e.printStackTrace();
+                }finally {
+                    clientSocket.close();
                 }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            ss.close();
+        }
         /*
             Thread t = new Thread(new Runnable() {
                 @Override
