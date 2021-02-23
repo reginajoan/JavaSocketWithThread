@@ -13,6 +13,9 @@ public class FailOverSocket{
             while(true) {
                 System.out.println("Waiting Transaction ..");
                 Socket clientSocket = ss.accept();
+                InetAddress inet = clientSocket.getInetAddress();
+                int port = clientSocket.getPort();
+                System.out.println("inet : "+inet +"\nport : "+port);
                 clientSocket.setKeepAlive(true);
                 try{
                     while (clientSocket.getInputStream().available() == 0) {
