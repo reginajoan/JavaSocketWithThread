@@ -26,7 +26,7 @@ public class FailOverSocket{
                     int bytes;
                     data = new byte[clientSocket.getInputStream().available()];
                     bytes = clientSocket.getInputStream().read(data,0,data.length);
-                    String dataDB = new String(data, 0, bytes, "UTF-8");
+                    String dataDB = new String(data, 0, bytes, "ASCII");
                     System.out.println("length data : " + dataDB.length());
                     System.out.println(dataDB);
                     sendPingRequest("172.16.1.243");
@@ -34,9 +34,9 @@ public class FailOverSocket{
 
                     //System.out.println("data from hobis " + dataFromHobis);
                     if(dataFromHobis != null){
-                        clientSocket.getOutputStream().write(dataFromHobis.getBytes("UTF-8"));
+                        clientSocket.getOutputStream().write(dataFromHobis.getBytes("ASCII"));
                     }
-                    SendToAd(net.replace("/",""),port,dataFromHobis);
+                    //SendToAd(net.replace("/",""),port,dataFromHobis);
                     dataFromHobis = null;
                     dataDB = null;
                 }catch(Exception e){
