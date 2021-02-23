@@ -47,9 +47,6 @@ class Task1 implements Callable<String> {
             return e.getMessage();
         }
     }
-    public static void close() throws IOException {
-        clientSocket.close();
-    }
 }
 
 /*

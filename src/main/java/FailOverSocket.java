@@ -23,14 +23,8 @@ public class FailOverSocket{
                     data = new byte[clientSocket.getInputStream().available()];
                     bytes = clientSocket.getInputStream().read(data,0,data.length);
                     String dataDB = new String(data, 0, bytes, "UTF-8");
-                    System.out.println("length before : " + dataDB.length());
-                    if(dataDB.equals("1373ATMDBALINQ")){
-                        while(dataDB.length() <= 1373){
-                            dataDB += " ";
-                        }
-                        continue;
-                    }
-                    System.out.println("length after : " + dataDB.length());
+                    System.out.println("length data : " + dataDB.length());
+                    System.out.println(dataDB);
                     sendPingRequest("172.16.1.243");
                     String dataFromHobis = getFromServer(dataDB);
 
@@ -85,14 +79,11 @@ public class FailOverSocket{
             t.start();
 
          */
-
         //String dataDB = "138ATMDBALINQ60110220002004844602211520018992  20200615103601000133001400002508  NBALHNBIDR    OA                484                                                                                                         4602211520018992=1225                                                                                                                                                                       0CECDB747795EE83                                                           20200615103601                                                        MAGSTRIPE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          -SendAdToHLI\"";
         //dataDB = "0957ATMDPRLOAN60110220002004844602211520018992  20200615103547000133005400000133  NGTLNAP6064201240152425    7303AAA13481D50C                                                                                                                                                                                                                                                                                                                                                                        20200615103547                                                                                                                                                                                                                                                                                                                                                                                                                                                             -SendAdToHLI\"";
-        //dataDB.length();
+        //dataDB = "1010HOBIBALINQ60110220300004844602211520018992  2021021714125000003330000000003306NBALHNB                                                                                                                                                                       00000000000000 00000000000000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       -SendAdToHLI\"";
         //getFromServer(dataDB);
     }
-
-
     public static String getFromServer(String dataDB) throws Exception {
         final int timeout = 10;
         String data = "";
@@ -128,6 +119,16 @@ public class FailOverSocket{
             return e.getMessage();
         }
     }
+
+    public static void palindrome(){
+        String kata = "katakkka";
+        String reverse = "";
+        for(int i = kata.length()-1; i>=0; i--){
+            reverse += kata.charAt(i);
+        }
+        System.out.println(reverse);
+    }
+
     public static String RunningProgram1(String dataDB, int timeout) throws Exception{
         String getFromHli = "";
         ExecutorService executor = Executors.newSingleThreadExecutor();
