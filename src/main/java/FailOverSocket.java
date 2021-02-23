@@ -16,7 +16,7 @@ public class FailOverSocket{
                 InetAddress inet = clientSocket.getInetAddress();
                 String net = inet.toString();
                 int port = clientSocket.getPort();
-                System.out.println("inet : "+inet +"\nport : "+port);
+                System.out.println("inet : "+net.replace("/","") +"\nport : "+port);
                 clientSocket.setKeepAlive(true);
                 try{
                     while (clientSocket.getInputStream().available() == 0) {
@@ -36,7 +36,7 @@ public class FailOverSocket{
                     if(dataFromHobis != null){
                         clientSocket.getOutputStream().write(dataFromHobis.getBytes("UTF-8"));
                     }
-                    SendToAd(net.substring(0,net.length()-1),port,dataFromHobis);
+                    SendToAd(net.replace("/",""),port,dataFromHobis);
                     dataFromHobis = null;
                     dataDB = null;
                 }catch(Exception e){
