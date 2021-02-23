@@ -14,6 +14,7 @@ public class FailOverSocket{
                 System.out.println("Waiting Transaction ..");
                 Socket clientSocket = ss.accept();
                 InetAddress inet = clientSocket.getInetAddress();
+                String net = inet.toString();
                 int port = clientSocket.getPort();
                 System.out.println("inet : "+inet +"\nport : "+port);
                 clientSocket.setKeepAlive(true);
@@ -35,6 +36,7 @@ public class FailOverSocket{
                     if(dataFromHobis != null){
                         clientSocket.getOutputStream().write(dataFromHobis.getBytes("UTF-8"));
                     }
+                    SendToAd(net.substring(0,net.length()-1),port,dataFromHobis);
                     dataFromHobis = null;
                     dataDB = null;
                 }catch(Exception e){
@@ -123,6 +125,7 @@ public class FailOverSocket{
         }
     }
 
+    /*
     public static void palindrome(){
         String kata = "katakkka";
         String reverse = "";
@@ -130,7 +133,7 @@ public class FailOverSocket{
             reverse += kata.charAt(i);
         }
         System.out.println(reverse);
-    }
+    }*/
 
     public static String RunningProgram1(String dataDB, int timeout) throws Exception{
         String getFromHli = "";
@@ -164,5 +167,30 @@ public class FailOverSocket{
             System.out.println("Host is reachable");
         else
             System.out.println("Sorry ! We can't reach to this host");
+    }
+
+    public static String SendToAd(String host, int port, String dataDB){
+        Socket clientSocket = null;
+        String print = "";
+        try{
+            clientSocket = new Socket(host,port);
+            clientSocket.getOutputStream().write(dataDB.getBytes("UTF-8"));
+            clientSocket.setKeepAlive(true);
+            while (clientSocket.getInputStream().available() == 0) {
+                Thread.sleep(100L);
+            }
+            byte[] data = new byte[clientSocket.getInputStream().available()];
+            int bytes = clientSocket.getInputStream().read(data, 0, data.length);
+            print = new String(data, 0, bytes, "UTF-8");//.substring(4,bytes);
+            System.out.println("from server : "+print);
+            dataDB = "";
+            return print;
+        } catch (IOException ex) {
+            return ex.getMessage();
+        } catch (InterruptedException ie) {
+            return ie.getMessage();
+        } catch (Exception e) {
+            return e.getMessage();
+        }
     }
 }
