@@ -20,15 +20,15 @@ public class PrintDATA {
         Date date = Calendar.getInstance().getTime();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String strDate = dateFormat.format(date);
-        String name = "traceAD_HLI"+ strDate;
+        String name = "traceAD_FROM_HLI"+ strDate;
         try {
-            File file = new File("regina/home/javaProject"+name);
+            File file = new File("/data01/dataHLI-Regi/"+name+".txt");
             FileWriter fw = new FileWriter(file, true);
             BufferedWriter bw = new BufferedWriter(fw);
             if (!file.exists()) {
                 file.createNewFile();
             }
-            bw.write(Datas + "\n");
+            bw.write(Datas+"\n");
 
             bw.close();
             System.out.println("Data successfully appended at the end of file, file name : "+name);
@@ -38,7 +38,27 @@ public class PrintDATA {
             ioe.printStackTrace();
             return false;
         }
-
     }
 
+    public void printMsgToHli(String msg){
+        Date date = Calendar.getInstance().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String strDate = dateFormat.format(date);
+        String name = "traceAD_MSG_TO_HLI"+ strDate;
+        try {
+            File file = new File("/data01/dataHLI-Regi/"+name+".txt");
+            FileWriter fw = new FileWriter(file, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            bw.write(msg+"\n");
+
+            bw.close();
+            System.out.println("Data successfully appended at the end of file, file name : "+name);
+        } catch (IOException ioe) {
+            System.out.println("Exception occurred:");
+            ioe.printStackTrace();
+        }
+    }
 }
