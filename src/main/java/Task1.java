@@ -7,7 +7,7 @@ import java.util.concurrent.Callable;
 class Task1 implements Callable<String> {
 
     private static String host = "192.168.88.99";
-    private static int port = 1212;
+    private static int port = 32000;
     private String dataDB;
     private static Socket clientSocket = null;
     public Task1(String dataDB){

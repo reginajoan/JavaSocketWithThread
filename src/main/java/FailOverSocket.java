@@ -8,7 +8,8 @@ public class FailOverSocket{
     private static boolean flag = false;
 
     public static void main(String[] args) throws Exception {
-        ServerSocket ss = new ServerSocket(9000);
+        PrintDATA print = new PrintDATA();
+        /*ServerSocket ss = new ServerSocket(9000);
         try {
             while(true) {
                 System.out.println("Waiting Transaction ..");
@@ -34,8 +35,10 @@ public class FailOverSocket{
 
                     //System.out.println("data from hobis " + dataFromHobis);
                     if(dataFromHobis != null){
+                        print.setPrintATM(dataFromHobis);
                         clientSocket.getOutputStream().write(dataFromHobis.getBytes("ASCII"));
                     }
+                    print.setPrintATM(dataFromHobis);
                     //SendToAd(net.replace("/",""),port,dataFromHobis);
                     dataFromHobis = null;
                     dataDB = null;
@@ -84,10 +87,11 @@ public class FailOverSocket{
             t.start();
 
          */
-        //String dataDB = "138ATMDBALINQ60110220002004844602211520018992  20200615103601000133001400002508  NBALHNBIDR    OA                484                                                                                                         4602211520018992=1225                                                                                                                                                                       0CECDB747795EE83                                                           20200615103601                                                        MAGSTRIPE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          -SendAdToHLI\"";
-        //dataDB = "0957ATMDPRLOAN60110220002004844602211520018992  20200615103547000133005400000133  NGTLNAP6064201240152425    7303AAA13481D50C                                                                                                                                                                                                                                                                                                                                                                        20200615103547                                                                                                                                                                                                                                                                                                                                                                                                                                                             -SendAdToHLI\"";
+        String dataDB = "138ATMDBALINQ60110220002004844602211520018992  20200615103601000133001400002508  NBALHNBIDR    OA                484                                                                                                         4602211520018992=1225                                                                                                                                                                       0CECDB747795EE83                                                           20200615103601                                                        MAGSTRIPE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          -SendAdToHLI\"";
+        dataDB = "0957ATMDPRLOAN60110220002004844602211520018992  20200615103547000133005400000133  NGTLNAP6064201240152425    7303AAA13481D50C                                                                                                                                                                                                                                                                                                                                                                        20200615103547                                                                                                                                                                                                                                                                                                                                                                                                                                                             -SendAdToHLI\"";
         //dataDB = "1010HOBIBALINQ60110220300004844602211520018992  2021021714125000003330000000003306NBALHNB                                                                                                                                                                       00000000000000 00000000000000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       -SendAdToHLI\"";
-        //getFromServer(dataDB);
+
+        print.setPrintATM(getFromServer(dataDB));
     }
     public static String getFromServer(String dataDB) throws Exception {
         final int timeout = 10;
