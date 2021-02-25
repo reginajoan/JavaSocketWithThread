@@ -3,11 +3,17 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.*;
 public class FailOverSocket{
     private static boolean flag = false;
 
     public static void main(String[] args) throws Exception {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date date = new Date();
+        String tgl = date.toString();
+        System.out.println(date.getTime());
         PrintDATA print = new PrintDATA();
         ServerSocket ss = new ServerSocket(9000);
         try {
@@ -35,14 +41,13 @@ public class FailOverSocket{
 
                     //System.out.println("data from hobis " + dataFromHobis);
                     if(dataFromHobis != null){
-                        print.setPrintATM(dataFromHobis);
                         clientSocket.getOutputStream().write(dataFromHobis.getBytes("UTF-8"));
                     }
-                    print.setPrintATM(dataFromHobis);
-                    print.printMsgToHli(dataDB);
+                    print.setPrintATM(tgl,dataFromHobis);
+                    print.printMsgToHli(tgl,dataDB);
                     //SendToAd(net.replace("/",""),port,dataFromHobis);
-                    dataFromHobis = null;
-                    dataDB = null;
+                    dataFromHobis = "";
+                    dataDB = "";
                 }catch(Exception e){
                     e.printStackTrace();
                 }finally {
