@@ -9,14 +9,14 @@ import java.util.Date;
 import java.util.List;
 
 public class PrintDATA {
-    public boolean setPrintATM(String date, String Datas){
-        if(PrintATM(date,Datas)){
+    public boolean setPrintATM(String date, long mili, String Datas){
+        if(PrintATM(date,mili ,Datas)){
             return true;
         }else {
             return false;
         }
     }
-    private boolean PrintATM(String tgl, String Datas) {
+    private boolean PrintATM(String tgl,long mili, String Datas) {
         Date date = Calendar.getInstance().getTime();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String strDate = dateFormat.format(date);
@@ -28,7 +28,7 @@ public class PrintDATA {
             if (!file.exists()) {
                 file.createNewFile();
             }
-            bw.write(tgl+Datas+"\n");
+            bw.write(tgl+mili+Datas+"\n");
 
             bw.close();
             System.out.println("Data successfully appended at the end of file, file name : "+name);
@@ -40,7 +40,7 @@ public class PrintDATA {
         }
     }
 
-    public void printMsgToHli(String tgl, String msg){
+    public void printMsgToHli(String tgl,long mili, String msg){
         Date date = Calendar.getInstance().getTime();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String strDate = dateFormat.format(date);
@@ -52,7 +52,7 @@ public class PrintDATA {
             if (!file.exists()) {
                 file.createNewFile();
             }
-            bw.write(tgl+msg+"\n");
+            bw.write(tgl+mili+msg+"\n");
 
             bw.close();
             System.out.println("Data successfully appended at the end of file, file name : "+name);
@@ -66,7 +66,7 @@ public class PrintDATA {
         Date date = Calendar.getInstance().getTime();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String strDate = dateFormat.format(date);
-        String name = "traceAD_MSG_TO_HLI"+ strDate;
+        String name = "traceAD_MSG_SaveData"+ strDate;
         try {
             File file = new File("/data01/dataHLI-Regi/"+name+".txt");
             FileWriter fw = new FileWriter(file, true);

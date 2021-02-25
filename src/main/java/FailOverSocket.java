@@ -16,8 +16,10 @@ public class FailOverSocket{
         Date date = new Date();
         PrintDATA print = new PrintDATA();
         ServerSocket ss = new ServerSocket(9000);
+
         try {
             while(true) {
+                long mili = date.getTime();
                 String tgl = date.toString();
                 System.out.println("Waiting Transaction ..");
                 Socket clientSocket = ss.accept();
@@ -49,8 +51,8 @@ public class FailOverSocket{
                     printData.add(tgl+dataDB);
                     print.saveDataTxt(printData);
 
-                    print.setPrintATM(tgl,dataFromHobis);
-                    print.printMsgToHli(tgl,dataDB);
+                    print.setPrintATM(tgl,mili,dataFromHobis);
+                    print.printMsgToHli(tgl,mili,dataDB);
                     //SendToAd(net.replace("/",""),port,dataFromHobis);
                     dataFromHobis = "";
                     dataDB = "";
