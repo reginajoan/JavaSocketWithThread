@@ -43,11 +43,14 @@ class Task1 implements Callable<String> {
             dataDB = "";
             return print;
         } catch (IOException ex) {
-            return ex.getMessage();
+            ex.getMessage();
+            return print;
         } catch (InterruptedException ie) {
-            return ie.getMessage();
+            ie.getMessage();
+            return print;
         } catch (Exception e) {
-            return e.getMessage();
+            e.getMessage();
+            return print;
         }
     }
     public static void sendPingRequest(String ipAddress)

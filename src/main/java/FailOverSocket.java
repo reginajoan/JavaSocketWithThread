@@ -136,7 +136,8 @@ public class FailOverSocket{
             System.out.println("Terminated!");
             flag = false;
             executor.shutdownNow();
-            return e.getMessage();
+            e.getMessage();
+            return getFromHli;
         }
     }
 
@@ -170,7 +171,8 @@ public class FailOverSocket{
             System.out.println("Terminated!");
             flag = false;
             executor.shutdownNow();
-            return e.getMessage();
+            e.getMessage();
+            return getFromHli;
         }
     }
     public static void sendPingRequest(String ipAddress)

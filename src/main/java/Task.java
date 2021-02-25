@@ -40,11 +40,14 @@ class Task implements Callable<String> {
             dataDB = "";
             return print;
         } catch (IOException ex) {
-            return ex.getMessage();
+            ex.printStackTrace();
+            return print;
         } catch (InterruptedException ie) {
-            return ie.getMessage();
+            ie.printStackTrace();
+            return print;
         } catch (Exception e) {
-            return e.getMessage();
+            e.getMessage();
+            return print;
         }
     }
 
