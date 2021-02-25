@@ -39,26 +39,25 @@ public class FailOverSocket{
                     bytes = clientSocket.getInputStream().read(data,0,data.length);
                     String dataDB = new String(data, 0, bytes, "UTF-8");
                     System.out.println("length data : " + dataDB.length());
+                    long startTime = mili;
                     System.out.println(dataDB);
                     sendPingRequest("172.16.1.243");
-                    long startTime = mili;
                     String dataFromHobis = getFromServer(dataDB);
-
-                    //System.out.println("data from hobis " + dataFromHobis);
                     if(dataFromHobis != null){
                         clientSocket.getOutputStream().write(dataFromHobis.getBytes("UTF-8"));
                     }
-
                     List<String> printData = new ArrayList<String>();
-                    printData.add(tgl+dataFromHobis);
                     printData.add(tgl+dataDB);
+                    printData.add(tgl+dataFromHobis);
+
                     print.saveDataTxt(printData);
 
-                    print.setPrintATM(tgl,startTime,dataFromHobis);
+                    //print.setPrintATM(tgl,startTime,dataFromHobis);
                     print.printMsgToHli(tgl,startTime,dataDB);
                     //SendToAd(net.replace("/",""),port,dataFromHobis);
-                    long endTime = mili;
+                    long endTime = mili + date.getTime();
                     long countTime = startTime - endTime;
+                    System.out.println("start time : "+ startTime+"\nend time: "+endTime);
                     while (startTime < endTime){
                         Thread.sleep(countTime);
                         SendAndGetFromHLI("");
