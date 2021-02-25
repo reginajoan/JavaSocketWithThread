@@ -14,6 +14,7 @@ public class FailOverSocket{
     public static void main(String[] args) throws Exception {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date date = new Date();
+        //triagle();
         PrintDATA print = new PrintDATA();
         ServerSocket ss = new ServerSocket(9000);
 
@@ -55,11 +56,11 @@ public class FailOverSocket{
                     //print.setPrintATM(tgl,startTime,dataFromHobis);
                     print.printMsgToHli(tgl,startTime,dataDB);
                     //SendToAd(net.replace("/",""),port,dataFromHobis);
-                    long endTime = mili + date.getTime();
-                    long countTime = startTime - endTime;
-                    System.out.println("start time : "+ startTime+"\nend time: "+endTime);
+                    long endTime = date.getTime();
+                    long rangeTime = startTime - endTime;
+                    System.out.println("start time : "+ startTime+"\nend time: "+endTime+"\ntime arrange : "+rangeTime);
                     while (startTime < endTime){
-                        Thread.sleep(countTime);
+                        Thread.sleep(rangeTime);
                         SendAndGetFromHLI("");
                         startTime++;
                     }
@@ -114,6 +115,23 @@ public class FailOverSocket{
         //dataDB = "0957ATMDPRLOAN60110220002004844602211520018992  20200615103547000133005400000133  NGTLNAP6064201240152425    7303AAA13481D50C                                                                                                                                                                                                                                                                                                                                                                        20200615103547                                                                                                                                                                                                                                                                                                                                                                                                                                                             -SendAdToHLI\"";
         //dataDB = "1010HOBIBALINQ60110220300004844602211520018992  2021021714125000003330000000003306NBALHNB                                                                                                                                                                       00000000000000 00000000000000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       -SendAdToHLI\"";
         //print.setPrintATM(getFromServer(dataDB));
+    }
+    public static void triagle(){
+        for(int i=0;i<5;i++){
+            for(int j=0; j<i;j++){
+                System.out.print("*");
+            }
+            System.out.println();
+        }
+        for (int i=5;i>0;i--){
+            for(int j=i;j>0;j--){
+                System.out.print("_");
+            }
+            for(int k=i;k>0;k--){
+                System.out.print("*");
+            }
+            System.out.println();
+        }
     }
     public static String getFromServer(String dataDB) throws Exception {
         final int timeout = 10;
