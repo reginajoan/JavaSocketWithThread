@@ -4,7 +4,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.*;
 public class FailOverSocket{
     private static boolean flag = false;
@@ -12,12 +14,11 @@ public class FailOverSocket{
     public static void main(String[] args) throws Exception {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date date = new Date();
-        String tgl = date.toString();
-        System.out.println(date.getTime());
         PrintDATA print = new PrintDATA();
         ServerSocket ss = new ServerSocket(9000);
         try {
             while(true) {
+                String tgl = date.toString();
                 System.out.println("Waiting Transaction ..");
                 Socket clientSocket = ss.accept();
                 InetAddress inet = clientSocket.getInetAddress();
@@ -43,6 +44,11 @@ public class FailOverSocket{
                     if(dataFromHobis != null){
                         clientSocket.getOutputStream().write(dataFromHobis.getBytes("UTF-8"));
                     }
+                    List<String> printData = new ArrayList<String>();
+                    printData.add(tgl+dataFromHobis);
+                    printData.add(tgl+dataDB);
+                    print.saveDataTxt(printData);
+
                     print.setPrintATM(tgl,dataFromHobis);
                     print.printMsgToHli(tgl,dataDB);
                     //SendToAd(net.replace("/",""),port,dataFromHobis);

@@ -61,4 +61,27 @@ public class PrintDATA {
             ioe.printStackTrace();
         }
     }
+
+    public void saveDataTxt(List<String> datas){
+        Date date = Calendar.getInstance().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String strDate = dateFormat.format(date);
+        String name = "traceAD_MSG_TO_HLI"+ strDate;
+        try {
+            File file = new File("/data01/dataHLI-Regi/"+name+".txt");
+            FileWriter fw = new FileWriter(file, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            for(String data : datas){
+                bw.write(data+"\n");
+            }
+            bw.close();
+            System.out.println("Data successfully appended at the end of file, file name : "+name);
+        } catch (IOException ioe) {
+            System.out.println("Exception occurred:");
+            ioe.printStackTrace();
+        }
+    }
 }
