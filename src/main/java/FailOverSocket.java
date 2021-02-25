@@ -20,6 +20,7 @@ public class FailOverSocket{
         try {
             while(true) {
                 long mili = date.getTime();
+                System.out.println(mili);
                 String tgl = date.toString();
                 System.out.println("Waiting Transaction ..");
                 Socket clientSocket = ss.accept();
@@ -40,20 +41,29 @@ public class FailOverSocket{
                     System.out.println("length data : " + dataDB.length());
                     System.out.println(dataDB);
                     sendPingRequest("172.16.1.243");
+                    long startTime = mili;
                     String dataFromHobis = getFromServer(dataDB);
 
                     //System.out.println("data from hobis " + dataFromHobis);
                     if(dataFromHobis != null){
                         clientSocket.getOutputStream().write(dataFromHobis.getBytes("UTF-8"));
                     }
+
                     List<String> printData = new ArrayList<String>();
                     printData.add(tgl+dataFromHobis);
                     printData.add(tgl+dataDB);
                     print.saveDataTxt(printData);
 
-                    print.setPrintATM(tgl,mili,dataFromHobis);
-                    print.printMsgToHli(tgl,mili,dataDB);
+                    print.setPrintATM(tgl,startTime,dataFromHobis);
+                    print.printMsgToHli(tgl,startTime,dataDB);
                     //SendToAd(net.replace("/",""),port,dataFromHobis);
+                    long endTime = mili;
+                    long countTime = startTime - endTime;
+                    while (startTime < endTime){
+                        Thread.sleep(countTime);
+                        SendAndGetFromHLI("");
+                        startTime++;
+                    }
                     dataFromHobis = "";
                     dataDB = "";
                 }catch(Exception e){
@@ -210,6 +220,35 @@ public class FailOverSocket{
             return ie.getMessage();
         } catch (Exception e) {
             return e.getMessage();
+        }
+    }
+
+    public static String SendAndGetFromHLI(String dataDB) throws IOException {
+        String host = "192.168.88.99";
+        int port = 1212;
+        String print = "";
+        try{
+            Socket clientSocket = new Socket(host, port);
+            clientSocket.getOutputStream().write(dataDB.getBytes("UTF-8"));
+            clientSocket.setKeepAlive(true);
+            while (clientSocket.getInputStream().available() == 0) {
+                Thread.sleep(100L);
+            }
+            byte[] data = new byte[clientSocket.getInputStream().available()];
+            int bytes = clientSocket.getInputStream().read(data, 0, data.length);
+            print = new String(data, 0, bytes, "UTF-8");//.substring(4,bytes);
+            System.out.println("from server : "+print);
+            dataDB = "";
+            return print;
+        } catch (IOException ex) {
+            ex.getMessage();
+            return print;
+        } catch (InterruptedException ie) {
+            ie.getMessage();
+            return print;
+        } catch (Exception e) {
+            e.getMessage();
+            return print;
         }
     }
 }
