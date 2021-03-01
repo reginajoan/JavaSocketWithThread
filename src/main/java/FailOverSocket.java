@@ -12,6 +12,7 @@ public class FailOverSocket{
     private static boolean flag = false;
 
     public static void main(String[] args) throws Exception {
+
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date date = new Date();
         //triagle();
@@ -42,8 +43,9 @@ public class FailOverSocket{
                     System.out.println("length data : " + dataDB.length());
                     long startTime = mili;
                     System.out.println(dataDB);
-                    sendPingRequest("172.16.1.243");
-                    String dataFromHobis = getFromServer(dataDB);
+                    sendPingRequest("192.168.88.99");
+                    String dataFromHobis = SendToAd("192.168.1.99",1212,dataDB);
+                            //getFromServer(dataDB);
                     if(dataFromHobis != null){
                         clientSocket.getOutputStream().write(dataFromHobis.getBytes("UTF-8"));
                     }
@@ -59,11 +61,12 @@ public class FailOverSocket{
                     long endTime = date.getTime();
                     long rangeTime = startTime - endTime;
                     System.out.println("start time : "+ startTime+"\nend time: "+endTime+"\ntime arrange : "+rangeTime);
-                    while (startTime < endTime){
-                        Thread.sleep(rangeTime);
-                        //SendAndGetFromHLI("");
-                        startTime++;
-                    }
+//                    while (startTime < endTime){
+//                        Thread.sleep(rangeTime);
+//                        //SendAndGetFromHLI("");
+//                        startTime++;
+//                    }
+
                     dataFromHobis = "";
                     dataDB = "";
                 }catch(Exception e){
@@ -114,7 +117,7 @@ public class FailOverSocket{
         //String dataDB = "138ATMDBALINQ60110220002004844602211520018992  20200615103601000133001400002508  NBALHNBIDR    OA                484                                                                                                         4602211520018992=1225                                                                                                                                                                       0CECDB747795EE83                                                           20200615103601                                                        MAGSTRIPE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          -SendAdToHLI\"";
         //dataDB = "0957ATMDPRLOAN60110220002004844602211520018992  20200615103547000133005400000133  NGTLNAP6064201240152425    7303AAA13481D50C                                                                                                                                                                                                                                                                                                                                                                        20200615103547                                                                                                                                                                                                                                                                                                                                                                                                                                                             -SendAdToHLI\"";
         //dataDB = "1010HOBIBALINQ60110220300004844602211520018992  2021021714125000003330000000003306NBALHNB                                                                                                                                                                       00000000000000 00000000000000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       -SendAdToHLI\"";
-        //print.setPrintATM(getFromServer(dataDB));
+        //getFromServer(getFromServer(dataDB));
     }
     public static void triagle(){
         for(int i=0;i<5;i++){
