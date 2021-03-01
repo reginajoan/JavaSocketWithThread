@@ -61,7 +61,7 @@ public class FailOverSocket{
                     System.out.println("start time : "+ startTime+"\nend time: "+endTime+"\ntime arrange : "+rangeTime);
                     while (startTime < endTime){
                         Thread.sleep(rangeTime);
-                        SendAndGetFromHLI("");
+                        //SendAndGetFromHLI("");
                         startTime++;
                     }
                     dataFromHobis = "";
@@ -237,35 +237,6 @@ public class FailOverSocket{
             return ie.getMessage();
         } catch (Exception e) {
             return e.getMessage();
-        }
-    }
-
-    public static String SendAndGetFromHLI(String dataDB) throws IOException {
-        String host = "192.168.88.99";
-        int port = 1212;
-        String print = "";
-        try{
-            Socket clientSocket = new Socket(host, port);
-            clientSocket.getOutputStream().write(dataDB.getBytes("UTF-8"));
-            clientSocket.setKeepAlive(true);
-            while (clientSocket.getInputStream().available() == 0) {
-                Thread.sleep(100L);
-            }
-            byte[] data = new byte[clientSocket.getInputStream().available()];
-            int bytes = clientSocket.getInputStream().read(data, 0, data.length);
-            print = new String(data, 0, bytes, "UTF-8");//.substring(4,bytes);
-            System.out.println("from server : "+print);
-            dataDB = "";
-            return print;
-        } catch (IOException ex) {
-            ex.getMessage();
-            return print;
-        } catch (InterruptedException ie) {
-            ie.getMessage();
-            return print;
-        } catch (Exception e) {
-            e.getMessage();
-            return print;
         }
     }
 }

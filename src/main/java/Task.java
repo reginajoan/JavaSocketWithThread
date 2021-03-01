@@ -41,13 +41,13 @@ class Task implements Callable<String> {
             return print;
         } catch (IOException ex) {
             ex.printStackTrace();
-            return print;
+            return ex.getMessage();
         } catch (InterruptedException ie) {
             ie.printStackTrace();
-            return print;
+            return ie.getMessage();
         } catch (Exception e) {
             e.getMessage();
-            return print;
+            return e.getMessage();
         }
     }
 
