@@ -1,6 +1,7 @@
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -26,7 +27,7 @@ class Task1 implements Callable<String> {
         }
     }
 
-    public static String SendAndGetFromHLI(String dataDB) throws IOException {
+    public static String SendAndGetFromHLI(String dataDB) throws IOException, InterruptedIOException {
         sendPingRequest(host);
         String print = "";
         try{

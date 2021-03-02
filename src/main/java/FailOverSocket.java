@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -12,10 +13,12 @@ public class FailOverSocket{
     private static boolean flag = false;
 
     public static void main(String[] args) throws Exception {
+        JTextField textField = new JTextField(50);
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date date = new Date();
-        //triagle();
+
+
         PrintDATA print = new PrintDATA();
         ServerSocket ss = new ServerSocket(9000);
 
@@ -44,14 +47,14 @@ public class FailOverSocket{
                     long startTime = mili;
                     System.out.println(dataDB);
                     sendPingRequest("192.168.88.99");
-                    String dataFromHobis = SendToAd("192.168.1.99",1212,dataDB);
+                    String dataFromHobis = SendToAd("192.168.88.99",1212,dataDB);
                             //getFromServer(dataDB);
                     if(dataFromHobis != null){
                         clientSocket.getOutputStream().write(dataFromHobis.getBytes("UTF-8"));
                     }
                     List<String> printData = new ArrayList<String>();
-                    printData.add(tgl+dataDB);
-                    printData.add(tgl+dataFromHobis);
+                    printData.add(tgl+" "+dataDB);
+                    printData.add(tgl+" "+dataFromHobis);
 
                     print.saveDataTxt(printData);
 
@@ -113,28 +116,13 @@ public class FailOverSocket{
             });
             t.start();
 
-         */
-        //String dataDB = "138ATMDBALINQ60110220002004844602211520018992  20200615103601000133001400002508  NBALHNBIDR    OA                484                                                                                                         4602211520018992=1225                                                                                                                                                                       0CECDB747795EE83                                                           20200615103601                                                        MAGSTRIPE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          -SendAdToHLI\"";
+        */
+        String dataDB = "138ATMDBALINQ60110220002004844602211520018992  20200615103601000133001400002508  NBALHNBIDR    OA                484                                                                                                         4602211520018992=1225                                                                                                                                                                       0CECDB747795EE83                                                           20200615103601                                                        MAGSTRIPE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          -SendAdToHLI\"";
         //dataDB = "0957ATMDPRLOAN60110220002004844602211520018992  20200615103547000133005400000133  NGTLNAP6064201240152425    7303AAA13481D50C                                                                                                                                                                                                                                                                                                                                                                        20200615103547                                                                                                                                                                                                                                                                                                                                                                                                                                                             -SendAdToHLI\"";
         //dataDB = "1010HOBIBALINQ60110220300004844602211520018992  2021021714125000003330000000003306NBALHNB                                                                                                                                                                       00000000000000 00000000000000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       -SendAdToHLI\"";
-        //getFromServer(getFromServer(dataDB));
-    }
-    public static void triagle(){
-        for(int i=0;i<5;i++){
-            for(int j=0; j<i;j++){
-                System.out.print("*");
-            }
-            System.out.println();
-        }
-        for (int i=5;i>0;i--){
-            for(int j=i;j>0;j--){
-                System.out.print("_");
-            }
-            for(int k=i;k>0;k--){
-                System.out.print("*");
-            }
-            System.out.println();
-        }
+        //dataDB = "1386ATMDBALINQ60110210200004846064201620716526  20210301104258000336200000000336  NBALHNBIDR    OA                484                                                                                                         6064201620716526=24122200199999999999                                                                                                                                                       D103CCF1EE1A4A53                                                           20210301104258                                                        5CAM000482027400950580800480005F2A0203605F3401019A032103019C01309F02060000000000009F03060000000000009F101C0101A000000000E108FEC200000000000000000000000000000000009F1A0203609F2608A9B1DA310E15C43D9F3602005B9F370430303031                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        -SendAdToHLI\"";
+        dataDB = "1386ATMDBALINQ60110210200004846064201620716526  20210301104258000336200000000336  NBALHNBIDR    OA                484                                                                                                         6064201620716526=24122200199999999999                                                                                                                                                       D103CCF1EE1A4A53                                                           20210301104258                                                        5CAM000482027400950580800480005F2A0203605F3401019A032103019C01309F02060000000000009F03060000000000009F101C0101A000000000E108FEC200000000000000000000000000000000009F1A0203609F2608A9B1DA310E15C43D9F3602005B9F370430303031                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        -SendAdToHLI\"";
+        SendToAd("192.168.88.99",1212,dataDB);
     }
     public static String getFromServer(String dataDB) throws Exception {
         final int timeout = 10;
@@ -172,16 +160,6 @@ public class FailOverSocket{
             return getFromHli;
         }
     }
-
-    /*
-    public static void palindrome(){
-        String kata = "katakkka";
-        String reverse = "";
-        for(int i = kata.length()-1; i>=0; i--){
-            reverse += kata.charAt(i);
-        }
-        System.out.println(reverse);
-    }*/
 
     public static String RunningProgram1(String dataDB, int timeout) throws Exception{
         String getFromHli = "";
