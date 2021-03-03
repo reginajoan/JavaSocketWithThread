@@ -30,6 +30,7 @@ public class FailOverSocket{
                 String tgl = date.toString();
                 System.out.println("Waiting Transaction ..");
                 Socket clientSocket = ss.accept();
+
                 InetAddress inet = clientSocket.getInetAddress();
                 String net = inet.toString();
                 int port = clientSocket.getPort();
@@ -115,9 +116,9 @@ public class FailOverSocket{
             });
             t.start();
         */
-        String dataDB = "138ATMDBALINQ60110220002004844602211520018992  20200615103601000133001400002508  NBALHNBIDR    OA                484                                                                                                         4602211520018992=1225                                                                                                                                                                       0CECDB747795EE83                                                           20200615103601                                                        MAGSTRIPE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          -SendAdToHLI\"";
+        //String dataDB = "138ATMDBALINQ60110220002004844602211520018992  20200615103601000133001400002508  NBALHNBIDR    OA                484                                                                                                         4602211520018992=1225                                                                                                                                                                       0CECDB747795EE83                                                           20200615103601                                                        MAGSTRIPE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          -SendAdToHLI\"";
         //dataDB = "0957ATMDPRLOAN60110220002004844602211520018992  20200615103547000133005400000133  NGTLNAP6064201240152425    7303AAA13481D50C                                                                                                                                                                                                                                                                                                                                                                        20200615103547                                                                                                                                                                                                                                                                                                                                                                                                                                                             -SendAdToHLI\"";
-        dataDB = "1386ATMDBALINQ60110210200004846064201620716526  20210301104258000336200000000336  NBALHNBIDR    OA                484                                                                                                         6064201620716526=24122200199999999999                                                                                                                                                       D103CCF1EE1A4A53                                                           20210301104258                                                        5CAM000482027400950580800480005F2A0203605F3401019A032103019C01309F02060000000000009F03060000000000009F101C0101A000000000E108FEC200000000000000000000000000000000009F1A0203609F2608A9B1DA310E15C43D9F3602005B9F370430303031                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        -SendAdToHLI\"";
+        //dataDB = "1386ATMDBALINQ60110210200004846064201620716526  20210301104258000336200000000336  NBALHNBIDR    OA                484                                                                                                         6064201620716526=24122200199999999999                                                                                                                                                       D103CCF1EE1A4A53                                                           20210301104258                                                        5CAM000482027400950580800480005F2A0203605F3401019A032103019C01309F02060000000000009F03060000000000009F101C0101A000000000E108FEC200000000000000000000000000000000009F1A0203609F2608A9B1DA310E15C43D9F3602005B9F370430303031                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        -SendAdToHLI\"";
         //SendToAd("192.168.88.99",1212,dataDB);
     }
     public static String getFromServer(String dataDB) throws Exception {
@@ -198,15 +199,15 @@ public class FailOverSocket{
         try{
             clientSocket = new Socket(host,port);
             clientSocket.getOutputStream().write(dataDB.getBytes("ASCII"));
-            clientSocket.setKeepAlive(true);
-            while (clientSocket.getInputStream().available() == 0) {
-                Thread.sleep(100L);
+            while (clientSocket.getKeepAlive()){
+                while (clientSocket.getInputStream().available() == 0) {
+                    Thread.sleep(100L);
+                }
+                byte[] data = new byte[clientSocket.getInputStream().available()];
+                int bytes = clientSocket.getInputStream().read(data, 0, data.length);
+                print = new String(data, 0, bytes, "ASCII");//.substring(4,bytes);
+                System.out.println("from server : "+print);
             }
-            byte[] data = new byte[clientSocket.getInputStream().available()];
-            int bytes = clientSocket.getInputStream().read(data, 0, data.length);
-            print = new String(data, 0, bytes, "ASCII");//.substring(4,bytes);
-            System.out.println("from server : "+print);
-            dataDB = "";
             return print;
         } catch (IOException ex) {
             return ex.getMessage();
