@@ -25,13 +25,11 @@ class Task implements Callable<String> {
     }
 
     public String SendAndGetFromHLI(String dataDB) throws IOException, InterruptedIOException {
-        sendPingRequest(host);
         String print = "";
         try{
             clientSocket = new Socket(host,port);
             clientSocket.getOutputStream().write(dataDB.getBytes("UTF-8"));
             clientSocket.setKeepAlive(true);
-            while(clientSocket.getKeepAlive()){
                 while (clientSocket.getInputStream().available() == 0) {
                     Thread.sleep(100L);
                 }
@@ -40,7 +38,6 @@ class Task implements Callable<String> {
                 print = new String(data, 0, bytes, "UTF-8");//.substring(4,bytes);
                 System.out.println("from server : "+print);
                 dataDB = "";
-            }
             return print;
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -52,16 +49,5 @@ class Task implements Callable<String> {
             e.getMessage();
             return e.getMessage();
         }
-    }
-
-    public static void sendPingRequest(String ipAddress)
-            throws UnknownHostException, IOException
-    {
-        InetAddress geek = InetAddress.getByName(ipAddress);
-        System.out.println("Sending Ping Request to " + ipAddress);
-        if (geek.isReachable(1000))
-            System.out.println("Host is reachable");
-        else
-            System.out.println("Sorry ! We can't reach to this host");
     }
 }
