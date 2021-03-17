@@ -1,3 +1,5 @@
+package Old;
+
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.InetAddress;
@@ -5,12 +7,12 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.concurrent.Callable;
 
-class Task implements Callable<String> {
+class TaskOld implements Callable<Object> {
     private static String host = "192.168.88.99";
     private static int port = 1212;
     private String dataDB;
-    private static Socket clientSocket = null;
-    public Task(String dataDB){
+    private Socket clientSocket = null;
+    public TaskOld(String dataDB){
         this.dataDB = dataDB;
     }
 
@@ -25,13 +27,11 @@ class Task implements Callable<String> {
     }
 
     public String SendAndGetFromHLI(String dataDB) throws IOException, InterruptedIOException {
-        sendPingRequest(host);
         String print = "";
         try{
             clientSocket = new Socket(host,port);
             clientSocket.getOutputStream().write(dataDB.getBytes("UTF-8"));
             clientSocket.setKeepAlive(true);
-            while(clientSocket.getKeepAlive()){
                 while (clientSocket.getInputStream().available() == 0) {
                     Thread.sleep(100L);
                 }
@@ -40,30 +40,16 @@ class Task implements Callable<String> {
                 print = new String(data, 0, bytes, "UTF-8");//.substring(4,bytes);
                 System.out.println("from server : "+print);
                 dataDB = "";
-            }
-            clientSocket.close();
             return print;
         } catch (IOException ex) {
             ex.printStackTrace();
             return ex.getMessage();
         } catch (InterruptedException ie) {
-            Thread.currentThread().interrupt();
+            ie.printStackTrace();
             return ie.getMessage();
         } catch (Exception e) {
             e.getMessage();
             return e.getMessage();
         }
-        
-    }
-
-    public static void sendPingRequest(String ipAddress)
-            throws UnknownHostException, IOException
-    {
-        InetAddress geek = InetAddress.getByName(ipAddress);
-        System.out.println("Sending Ping Request to " + ipAddress);
-        if (geek.isReachable(1000))
-            System.out.println("Host is reachable");
-        else
-            System.out.println("Sorry ! We can't reach to this host");
     }
 }

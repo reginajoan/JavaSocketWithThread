@@ -1,3 +1,5 @@
+package Old;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -7,13 +9,13 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.concurrent.Callable;
 
-class Task1 implements Callable<String> {
+class Task1Old implements Callable<Object> {
 
     private static String host = "192.168.88.99";
     private static int port = 1212;
     private String dataDB;
     private static Socket clientSocket = null;
-    public Task1(String dataDB){
+    public Task1Old(String dataDB){
         this.dataDB = dataDB;
     }
 
@@ -42,19 +44,17 @@ class Task1 implements Callable<String> {
             print = new String(data, 0, bytes, "UTF-8");//.substring(4,bytes);
             System.out.println("from server : "+print);
             dataDB = "";
-            clientSocket.close();
             return print;
         } catch (IOException ex) {
             ex.getMessage();
             return print;
         } catch (InterruptedException ie) {
-            Thread.currentThread().interrupt();
-            return ie.getMessage();
+            ie.getMessage();
+            return print;
         } catch (Exception e) {
             e.getMessage();
             return print;
         }
-        
     }
     public static void sendPingRequest(String ipAddress)
             throws UnknownHostException, IOException
@@ -66,8 +66,6 @@ class Task1 implements Callable<String> {
         else
             System.out.println("Sorry ! We can't reach to this host");
     }
-
-
 }
 
 /*
