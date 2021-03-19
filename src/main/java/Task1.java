@@ -9,12 +9,14 @@ import java.util.concurrent.Callable;
 
 class Task1 implements Callable<String> {
 
-    private static String host = "192.168.88.99";
-    private static int port = 1212;
+    private static String host;
+    private static int port;
     private String dataDB;
     private static Socket clientSocket = null;
-    public Task1(String dataDB){
+    public Task1(String dataDB, String host, int port){
         this.dataDB = dataDB;
+        this.host = host;
+        this.port = port;
     }
 
     @Override
@@ -54,7 +56,7 @@ class Task1 implements Callable<String> {
             e.getMessage();
             return print;
         }
-        
+
     }
     public static void sendPingRequest(String ipAddress)
             throws UnknownHostException, IOException

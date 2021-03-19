@@ -13,19 +13,11 @@ public class FailOverSocket{
     private static boolean flag = false;
 
     public static void main(String[] args) throws Exception {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        Date date = new Date();
-        PrintDATA print = new PrintDATA();
         ServerSocket ss = new ServerSocket(9000);
-
         try {
             while(true) {
-                long mili = date.getTime();
-                System.out.println(mili);
-                String tgl = date.toString();
                 System.out.println("Waiting Transaction ..");
                 Socket clientSocket = ss.accept();
-
                 InetAddress inet = clientSocket.getInetAddress();
                 String net = inet.toString();
                 int port = clientSocket.getPort();
@@ -42,13 +34,13 @@ public class FailOverSocket{
                     String dataDB = new String(data, 0, bytes, "UTF-8");
                     System.out.println("length data : " + dataDB.length());
                     System.out.println(dataDB);
-                    sendPingRequest("172.16.1.244");
                     String dataFromHobis = getFromServer(dataDB);
                     //get and send data from data->hobis
                     clientSocket.getOutputStream().write(dataFromHobis.getBytes("UTF-8"));
                     List<String> printData = new ArrayList<String>();
-                    printData.add(tgl+" "+dataDB);
-                    printData.add(tgl+" "+dataFromHobis);
+                    printData.add(dataDB);
+                    printData.add(dataFromHobis);
+                    PrintDATA.saveDataTxtNew(printData);
                     dataFromHobis = "";
                     dataDB = "";
                 }catch(Exception e){
@@ -76,12 +68,18 @@ public class FailOverSocket{
         }
     }
     public static String RunningProgram(String dataDB, int timeout) throws Exception{
+        final String host = "192.168.88.98";
+        final int port = 32000;
         String getFromHli = "";
+        ChekHostAvailable chek = new ChekHostAvailable();
+        System.out.println("Server 1 running");
+        if(!chek.isSocketAliveUitlitybyCrunchify(host,port)){
+            flag = false;
+            return "Connection Refused!!!";
+        }
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        Future<String> future = executor.submit(new Task1(dataDB));
-
+        Future<String> future = executor.submit(new Task(dataDB, host, port));
         try {
-            System.out.println("Server 1 running");
             System.out.println("Started..");
             getFromHli = future.get(timeout, TimeUnit.SECONDS);
             System.out.println("Finished!");
@@ -99,11 +97,18 @@ public class FailOverSocket{
     }
 
     public static String RunningProgram1(String dataDB, int timeout) throws Exception{
+        String host = "192.168.88.99";
+        int port = 1212;
         String getFromHli = "";
+        ChekHostAvailable chek = new ChekHostAvailable();
+        System.out.println("Server 2 running");
+        if(!chek.isSocketAliveUitlitybyCrunchify(host,port)){
+            flag = false;
+            return "Connection Refused!!!";
+        }
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        Future<String> future = executor.submit(new Task(dataDB));
+        Future<String> future = executor.submit(new Task1(dataDB, host, port));
         try {
-            System.out.println("Server 2 running");
             System.out.println("Started..");
             getFromHli = future.get(timeout, TimeUnit.SECONDS);
             System.out.println("Finished!");
@@ -118,41 +123,6 @@ public class FailOverSocket{
             e.getMessage();
             System.out.println("Timeout!");
             return getFromHli;
-        }
-    }
-    public static void sendPingRequest(String ipAddress)
-            throws UnknownHostException, IOException
-    {
-        InetAddress geek = InetAddress.getByName(ipAddress);
-        System.out.println("Sending Ping Request to " + ipAddress);
-        if (geek.isReachable(5000))
-            System.out.println("Host is reachable");
-        else
-            System.out.println("Sorry ! We can't reach to this host");
-    }
-
-    public static String SendToAd(String host, int port, String dataDB){
-        Socket clientSocket = null;
-        String print = "";
-        try{
-            clientSocket = new Socket(host,port);
-            clientSocket.getOutputStream().write(dataDB.getBytes("ASCII"));
-            while (clientSocket.getKeepAlive()){
-                while (clientSocket.getInputStream().available() == 0) {
-                    Thread.sleep(100L);
-                }
-                byte[] data = new byte[clientSocket.getInputStream().available()];
-                int bytes = clientSocket.getInputStream().read(data, 0, data.length);
-                print = new String(data, 0, bytes, "ASCII");//.substring(4,bytes);
-                System.out.println("from server : "+print);
-            }
-            return print;
-        } catch (IOException ex) {
-            return ex.getMessage();
-        } catch (InterruptedException ie) {
-            return ie.getMessage();
-        } catch (Exception e) {
-            return e.getMessage();
         }
     }
 }

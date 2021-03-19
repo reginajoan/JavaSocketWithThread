@@ -6,12 +6,15 @@ import java.net.UnknownHostException;
 import java.util.concurrent.Callable;
 
 class Task implements Callable<String> {
-    private static String host = "192.168.88.99";
-    private static int port = 1212;
+    private static String host;
+    private static int port;
     private String dataDB;
     private static Socket clientSocket = null;
-    public Task(String dataDB){
+
+    public Task(String dataDB, String host, int port){
         this.dataDB = dataDB;
+        this.host = host;
+        this.port = port;
     }
 
     @Override
@@ -25,7 +28,6 @@ class Task implements Callable<String> {
     }
 
     public String SendAndGetFromHLI(String dataDB) throws IOException, InterruptedIOException {
-        sendPingRequest(host);
         String print = "";
         try{
             clientSocket = new Socket(host,port);
@@ -53,17 +55,5 @@ class Task implements Callable<String> {
             e.getMessage();
             return e.getMessage();
         }
-        
-    }
-
-    public static void sendPingRequest(String ipAddress)
-            throws UnknownHostException, IOException
-    {
-        InetAddress geek = InetAddress.getByName(ipAddress);
-        System.out.println("Sending Ping Request to " + ipAddress);
-        if (geek.isReachable(1000))
-            System.out.println("Host is reachable");
-        else
-            System.out.println("Sorry ! We can't reach to this host");
     }
 }
