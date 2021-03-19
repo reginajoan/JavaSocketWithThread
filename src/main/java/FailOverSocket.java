@@ -13,47 +13,54 @@ public class FailOverSocket{
     private static boolean flag = false;
 
     public static void main(String[] args) throws Exception {
-        ServerSocket ss = new ServerSocket(9000);
-        try {
-            while(true) {
-                System.out.println("Waiting Transaction ..");
-                Socket clientSocket = ss.accept();
-                InetAddress inet = clientSocket.getInetAddress();
-                String net = inet.toString();
-                int port = clientSocket.getPort();
-                System.out.println("inet : "+net.replace("/","") +"\nport : "+port);
-                clientSocket.setKeepAlive(true);
-                try{
-                    while (clientSocket.getInputStream().available() == 0) {
-                        Thread.sleep(100L);
+        final ServerSocket ss = new ServerSocket(9000);
+        Thread t = new Thread(() -> {
+            try {
+                while(true) {
+                    System.out.println("Waiting Transaction ..");
+                    Socket clientSocket = ss.accept();
+                    InetAddress inet = clientSocket.getInetAddress();
+                    String net = inet.toString();
+                    int port = clientSocket.getPort();
+                    System.out.println("inet : "+net.replace("/","") +"\nport : "+port);
+                    clientSocket.setKeepAlive(true);
+                    try{
+                        while (clientSocket.getInputStream().available() == 0) {
+                            Thread.sleep(100L);
+                        }
+                        byte[] data;
+                        int bytes;
+                        data = new byte[clientSocket.getInputStream().available()];
+                        bytes = clientSocket.getInputStream().read(data,0,data.length);
+                        String dataDB = new String(data, 0, bytes, "UTF-8");
+                        System.out.println("received data\n time : "+ new Date() +"length data : " + dataDB.length());
+                        System.out.println(dataDB);
+                        String dataFromHobis = getFromServer(dataDB);
+                        //get and send data from data->hobis
+                        clientSocket.getOutputStream().write(dataFromHobis.getBytes("UTF-8"));
+                        List<String> printData = new ArrayList<String>();
+                        printData.add(dataDB);
+                        printData.add(dataFromHobis);
+                        PrintDATA.saveDataTxtNew(printData);
+                        dataFromHobis = "";
+                        dataDB = "";
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }finally {
+                        clientSocket.close();
                     }
-                    byte[] data;
-                    int bytes;
-                    data = new byte[clientSocket.getInputStream().available()];
-                    bytes = clientSocket.getInputStream().read(data,0,data.length);
-                    String dataDB = new String(data, 0, bytes, "UTF-8");
-                    System.out.println("length data : " + dataDB.length());
-                    System.out.println(dataDB);
-                    String dataFromHobis = getFromServer(dataDB);
-                    //get and send data from data->hobis
-                    clientSocket.getOutputStream().write(dataFromHobis.getBytes("UTF-8"));
-                    List<String> printData = new ArrayList<String>();
-                    printData.add(dataDB);
-                    printData.add(dataFromHobis);
-                    PrintDATA.saveDataTxtNew(printData);
-                    dataFromHobis = "";
-                    dataDB = "";
-                }catch(Exception e){
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    ss.close();
+                } catch (IOException e) {
                     e.printStackTrace();
-                }finally {
-                    clientSocket.close();
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            ss.close();
-        }
+        });
+        t.start();
     }
 
     public static String getFromServer(String dataDB) throws Exception {

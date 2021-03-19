@@ -16,21 +16,27 @@ public class PrintDATA {
         String strDate = dateFormat.format(date);
         String name = "traceAD_MSG_SaveData"+ strDate;
         try {
+            for(int i=0;i<datas.size();i++){
+
+            }
             for(String data : datas){
                 File dir = new File("/data01/dataHLI-Regi/Java/"+data.substring(18,26)+"");
                 if(!dir.exists()){
                     dir.mkdirs();
                 }
+                System.out.println(data.length());
                 dir = new File("/data01/dataHLI-Regi/Java/"+data.substring(18,26)+"/"+strDate);
                 if(!dir.exists()){
                     dir.mkdirs();
                 }
+
                 File file = new File("/data01/dataHLI-Regi/Java/"+data.substring(18,26)+"/"+strDate+"/"+name+".txt");
                 FileWriter fw = new FileWriter(file, true);
                 BufferedWriter bw = new BufferedWriter(fw);
                 if (!file.exists()) {
                     file.createNewFile();
                 }
+
                 bw.write(new Date().toString()+" "+data+"\n");
                 bw.close();
             }
