@@ -1,8 +1,10 @@
+package TestThread;
+
 import java.io.IOException;
 import java.net.*;
 
 public class ChekHostAvailable {
-    public static boolean isSocketAliveUitlitybyCrunchify(String hostName, int port) {
+    public static boolean isSocketAlive(String hostName, int port) {
         boolean isAlive = false;
 
         // Creates a socket address from a hostname and a port number

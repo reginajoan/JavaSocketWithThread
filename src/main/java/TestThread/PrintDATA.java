@@ -1,3 +1,5 @@
+package TestThread;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -10,16 +12,16 @@ import java.util.List;
 
 public class PrintDATA {
 
-    protected static void saveDataTxtNew(List<String> datas){
+    public static void saveDataTxtNew(List<String> datas){
         Date date = Calendar.getInstance().getTime();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String strDate = dateFormat.format(date);
         String name = "traceAD_MSG_SaveData"+ strDate;
         try {
-            for(int i=0;i<datas.size();i++){
-
-            }
             for(String data : datas){
+                if(data.isEmpty()){
+                    return;
+                }
                 File dir = new File("/data01/dataHLI-Regi/Java/"+data.substring(18,26)+"");
                 if(!dir.exists()){
                     dir.mkdirs();

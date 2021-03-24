@@ -1,3 +1,5 @@
+package TestThread;
+
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.InetAddress;
@@ -5,13 +7,13 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.concurrent.Callable;
 
-class Task1 implements Callable<String> {
+public class Task implements Callable<String> {
     private static String host;
     private static int port;
     private String dataDB;
     private static Socket clientSocket = null;
 
-    public Task1(String dataDB, String host, int port){
+    public Task(String dataDB, String host, int port){
         this.dataDB = dataDB;
         this.host = host;
         this.port = port;
@@ -27,22 +29,18 @@ class Task1 implements Callable<String> {
         }
     }
 
-    public String SendAndGetFromHLI(String dataDB) throws IOException, InterruptedIOException {
+    private String SendAndGetFromHLI(String dataDB) throws IOException, InterruptedIOException {
         String print = "";
         try{
             clientSocket = new Socket(host,port);
             clientSocket.getOutputStream().write(dataDB.getBytes("UTF-8"));
-            clientSocket.setKeepAlive(true);
-            while(clientSocket.getKeepAlive()){
-                while (clientSocket.getInputStream().available() == 0) {
-                    Thread.sleep(100L);
-                }
-                byte[] data = new byte[clientSocket.getInputStream().available()];
-                int bytes = clientSocket.getInputStream().read(data, 0, data.length);
-                print = new String(data, 0, bytes, "UTF-8");//.substring(4,bytes);
-                System.out.println("from server : "+print);
-                dataDB = "";
+            while (clientSocket.getInputStream().available() == 0) {
+                Thread.sleep(100L);
             }
+            byte[] data = new byte[clientSocket.getInputStream().available()];
+            int bytes = clientSocket.getInputStream().read(data, 0, data.length);
+            print = new String(data, 0, bytes, "UTF-8");//.substring(4,bytes);
+            System.out.println("from server : "+print);
             clientSocket.close();
             return print;
         } catch (IOException ex) {
