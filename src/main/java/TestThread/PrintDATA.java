@@ -26,7 +26,6 @@ public class PrintDATA {
                 if(!dir.exists()){
                     dir.mkdirs();
                 }
-                System.out.println(data.length());
                 dir = new File("/data01/dataHLI-Regi/Java/"+data.substring(18,26)+"/"+strDate);
                 if(!dir.exists()){
                     dir.mkdirs();

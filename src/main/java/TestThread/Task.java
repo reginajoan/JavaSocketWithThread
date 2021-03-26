@@ -12,6 +12,7 @@ public class Task implements Callable<String> {
     private static int port;
     private String dataDB;
     private static Socket clientSocket = null;
+    private String messageData;
 
     public Task(String dataDB, String host, int port){
         this.dataDB = dataDB;
@@ -28,7 +29,6 @@ public class Task implements Callable<String> {
             return e.getMessage();
         }
     }
-
     private String SendAndGetFromHLI(String dataDB) throws IOException, InterruptedIOException {
         String print = "";
         try{

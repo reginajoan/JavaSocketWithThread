@@ -1,1 +1,7 @@
-TestApp.class
+ThreadOne\SecondThread.class
+ThreadOne\MyThread.class
+ThreadOne\ThreadSyncronization.class
+ThreadOne\MyThread1.class
+ThreadOne\MainThread.class
+ThreadOne\ReadDataWithSyncronize.class
+ThreadOne\ThreadResource.class

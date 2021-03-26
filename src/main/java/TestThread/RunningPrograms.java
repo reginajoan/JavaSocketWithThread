@@ -11,23 +11,26 @@ public class RunningPrograms {
     public static String getFromServer(String dataDB) throws Exception {
         final int timeout = 15;
         String data = "";
-        data = RunningProgram(dataDB, timeout);
+        String host1 = "your host ip";
+        String host2 = "your host ip";
+        int port1 = 0;//your port
+        int port2 = 0;//your port
+
+        data = RunningProgram(dataDB, timeout, host1, port1);
         if(flag){
             return data;
         }else {
-            return RunningProgram1(dataDB, timeout);
+            return RunningProgram(dataDB, timeout, host2, port2);
         }
     }
 
-    private static String RunningProgram(String dataDB, int timeout) throws Exception{
-        final String host = "192.168.88.99";
-        final int port = 32000;
+    private static String RunningProgram(String dataDB, int timeout, String host, int port) throws Exception{
         String getFromHli = "";
         ChekHostAvailable chek = new ChekHostAvailable();
         System.out.println("Server 1 running");
         if(!chek.isSocketAlive(host,port)){
             flag = false;
-            return "Connection Refused!!!";
+            return null;
         }
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Future<String> future = executor.submit(new Task(dataDB, host, port));
@@ -44,13 +47,11 @@ public class RunningPrograms {
             flag = false;
             executor.shutdownNow();
             e.getMessage();
-            return getFromHli;
+            return null;
         }
     }
 
-    private static String RunningProgram1(String dataDB, int timeout) throws Exception{
-        String host = "192.168.88.98";
-        int port = 1212;
+    private static String RunningProgram1(String dataDB, int timeout, String host, int port) throws Exception{
         String getFromHli = "";
         ChekHostAvailable chek = new ChekHostAvailable();
         System.out.println("Server 2 running");
