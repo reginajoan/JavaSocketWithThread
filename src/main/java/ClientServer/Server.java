@@ -1,4 +1,4 @@
-package CodeMechanic;
+package ClientServer;
 
 import java.io.IOException;
 import java.net.ServerSocket;

@@ -16,12 +16,14 @@ public class PrintDATA {
         Date date = Calendar.getInstance().getTime();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String strDate = dateFormat.format(date);
-        String name = "traceAD_MSG_SaveData"+ strDate;
+        String fileName = "";
         try {
             for(String data : datas){
-                if(data.isEmpty()){
+                if(data.equals(null) || data.isEmpty()){
                     return;
                 }
+                String joinName = "traceAD_MSG_SaveData"+data.substring(18,26)+"--"+strDate;
+                fileName = joinName;
                 File dir = new File("/data01/dataHLI-Regi/Java/"+data.substring(18,26)+"");
                 if(!dir.exists()){
                     dir.mkdirs();
@@ -30,18 +32,49 @@ public class PrintDATA {
                 if(!dir.exists()){
                     dir.mkdirs();
                 }
-
-                File file = new File("/data01/dataHLI-Regi/Java/"+data.substring(18,26)+"/"+strDate+"/"+name+".txt");
+                File file = new File("/data01/dataHLI-Regi/Java/"+data.substring(18,26)+"/"+strDate+"/"+joinName+".txt");
                 FileWriter fw = new FileWriter(file, true);
                 BufferedWriter bw = new BufferedWriter(fw);
                 if (!file.exists()) {
                     file.createNewFile();
                 }
-
                 bw.write(new Date().toString()+" "+data+"\n");
                 bw.close();
             }
-            System.out.println("Data successfully appended at the end of file, file name : "+name);
+            System.out.println("Data successfully appended at the end of file, file name : "+fileName);
+        } catch (IOException ioe) {
+            System.out.println("Exception occurred:");
+            ioe.printStackTrace();
+        }
+    }
+
+    public static void saveDataTxtTest(List<String> datas, String name){
+        Date date = Calendar.getInstance().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String strDate = dateFormat.format(date);
+        String fileName = "";
+        try {
+            for(String data : datas){
+                String joinName = "traceAD_MSG_SaveData"+name+"--"+strDate;
+                fileName = joinName;
+                File dir = new File("/data01/dataHLI-Regi/Java/"+name+"");
+                if(!dir.exists()){
+                    dir.mkdirs();
+                }
+                dir = new File("/data01/dataHLI-Regi/Java/"+name+"/"+strDate);
+                if(!dir.exists()){
+                    dir.mkdirs();
+                }
+                File file = new File("/data01/dataHLI-Regi/Java/"+name+"/"+strDate+"/"+joinName+".txt");
+                FileWriter fw = new FileWriter(file, true);
+                BufferedWriter bw = new BufferedWriter(fw);
+                if (!file.exists()) {
+                    file.createNewFile();
+                }
+                bw.write(new Date().toString()+" "+data+"\n");
+                bw.close();
+            }
+            System.out.println("Data successfully appended at the end of file, file name : "+fileName);
         } catch (IOException ioe) {
             System.out.println("Exception occurred:");
             ioe.printStackTrace();

@@ -1,23 +1,22 @@
-package CodeMechanic;
+package ClientServer;
 
 import TestThread.PrintDATA;
 import TestThread.RunningPrograms;
-
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.BindException;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Worker implements Runnable {
+public class Worker extends RunningPrograms implements Runnable {
     private Integer id;
     private final Socket clientSocket;
 
     public Worker(Integer id, Socket client) {
-        this.id = id;   //Ignore it, it was for logging purpose, how many joined
+        this.id = id;
         this.clientSocket = client;
     }
 
@@ -33,7 +32,6 @@ public class Worker implements Runnable {
     private void listenClientMessages() throws IOException {
         final int MAX_INPUT = 1500;
         int read;
-        RunningPrograms programs = new RunningPrograms();
         InetAddress inet = clientSocket.getInetAddress();
         String net = inet.toString();
         int port = clientSocket.getPort();
@@ -42,18 +40,34 @@ public class Worker implements Runnable {
             byte[] buf = new byte[MAX_INPUT];
             while ((read = is.read(buf)) != -1) {
                 String dataDB = new String(buf, 0, read, "UTF-8");
-                System.out.println("received data\n time : "+ new Date() +"\nlength data : " + dataDB.length());
+                System.out.println("received data\ntime : "+ new Date() +"\nlength data : " + dataDB.length());
                 System.out.println(dataDB);
-                String dataFromHobis = programs.getFromServer(dataDB);
+                String dataFromHobis = null;
                 //get and send data from data->hobis
-                String message = dataFromHobis;
-                clientSocket.getOutputStream().write(dataFromHobis.getBytes("UTF-8"));
+                /*
+                if(clientSocket.getInetAddress().toString().equals("/172.16.1.244") || clientSocket.getInetAddress().toString().equals("/172.16.1.243")){
+                    dataFromHobis = programs.getFromServer(dataDB);
+                }
+               else{
+                    dataFromHobis = RunningPrograms.RunningProgram1(dataDB, 10, "172.16.1.244",9400);
+                }*/
+                dataFromHobis = getFromServer(dataDB);
+                String fileName = dataDB.substring(18,26);
+                if(dataFromHobis == null){
+                    System.out.println("error null return");
+                    System.out.println("Waiting transaction !!!");
+                }else if(dataFromHobis != null){
+                    clientSocket.getOutputStream().write(dataFromHobis.getBytes("UTF-8"));
+                }
                 List<String> printData = new ArrayList<String>();
                 printData.add(dataDB);
                 printData.add(dataFromHobis);
-                PrintDATA.saveDataTxtNew(printData);
+                PrintDATA.saveDataTxtTest(printData, dataDB.substring(18,26));
+                System.out.println("Waiting transaction !!!");
             }
-        } catch (IOException ex) {
+        }catch (SocketException se){
+            System.out.println("Reset Connection \nInternet Address : "+net.replace("/","") +" and port : "+port);
+        }catch (IOException ex) {
             ex.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
@@ -62,4 +76,3 @@ public class Worker implements Runnable {
         }
     }
 }
-

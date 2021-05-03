@@ -2,9 +2,7 @@ package TestThread;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
-import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.concurrent.Callable;
 
 public class Task implements Callable<String> {
@@ -12,7 +10,6 @@ public class Task implements Callable<String> {
     private static int port;
     private String dataDB;
     private static Socket clientSocket = null;
-    private String messageData;
 
     public Task(String dataDB, String host, int port){
         this.dataDB = dataDB;
@@ -30,7 +27,7 @@ public class Task implements Callable<String> {
         }
     }
     private String SendAndGetFromHLI(String dataDB) throws IOException, InterruptedIOException {
-        String print = "";
+        String print = null;
         try{
             clientSocket = new Socket(host,port);
             clientSocket.getOutputStream().write(dataDB.getBytes("UTF-8"));
@@ -41,17 +38,15 @@ public class Task implements Callable<String> {
             int bytes = clientSocket.getInputStream().read(data, 0, data.length);
             print = new String(data, 0, bytes, "UTF-8");//.substring(4,bytes);
             System.out.println("from server : "+print);
-            clientSocket.close();
-            return print;
         } catch (IOException ex) {
             ex.printStackTrace();
-            return ex.getMessage();
         } catch (InterruptedException ie) {
             Thread.currentThread().interrupt();
-            return ie.getMessage();
         } catch (Exception e) {
             e.getMessage();
-            return e.getMessage();
+        }finally {
+            clientSocket.close();
         }
+        return print;
     }
 }

@@ -2,9 +2,7 @@ package TestThread;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
-import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.concurrent.Callable;
 
 class Task1 implements Callable<String> {
@@ -41,18 +39,17 @@ class Task1 implements Callable<String> {
                 int bytes = clientSocket.getInputStream().read(data, 0, data.length);
                 print = new String(data, 0, bytes, "UTF-8");//.substring(4,bytes);
                 System.out.println("from server : "+print);
-                dataDB = "";
-            clientSocket.close();
-            return print;
         } catch (IOException ex) {
             ex.printStackTrace();
-            return ex.getMessage();
+            ex.getMessage();
         } catch (InterruptedException ie) {
             Thread.currentThread().interrupt();
-            return ie.getMessage();
+            ie.getMessage();
         } catch (Exception e) {
             e.getMessage();
-            return e.getMessage();
+        }finally{
+            clientSocket.close();
         }
+        return print;
     }
 }
