@@ -5,11 +5,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
-
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -17,13 +12,14 @@ public class RunningPrograms {
     private final static AtomicInteger idGenerator = new AtomicInteger(0);
     protected static String getFromServer(String dataDB) {
         final int timeout = 10;
+        int port = 0;
+        String host = "";
         String data = null;
         NavigableMap<Object, Object> sort = new TreeMap<>().descendingMap();
-        sort.put(32000, List.of("192.168.88.99"));
-        sort.put(1212, List.of("192.168.88.99","192.168.88.98"));
+        sort.put(port, List.of(host));
         for(Map.Entry portAndHost : sort.entrySet()){
             for(String Host : (List<String>) portAndHost.getValue()){
-                //jika data yang dikirim hasilnya != null maka akan keluar, kalau tidak akan melakukan pengecekan ip dan port sampai selesai looping
+                // check if data not empty then out of loop else will be loop until sort is empty
                 if((data = RunningProgram(dataDB, timeout, Host, (Integer) portAndHost.getKey(), idGenerator.getAndIncrement())) != null){
                     break;
                 }
@@ -57,7 +53,9 @@ public class RunningPrograms {
             e.getMessage();
             getFromHli = null;
         }finally {
-            executor.shutdownNow();
+            if(!executor.isShutdown()){
+                executor.shutdownNow();
+            }
         }
         return getFromHli;
     }
@@ -80,7 +78,9 @@ public class RunningPrograms {
             e.getMessage();
             System.out.println("Timeout!");
         }finally {
-            executor.shutdownNow();
+            if(!executor.isShutdown()){
+                executor.shutdownNow();
+            }
         }
         return getFromHli;
     }
