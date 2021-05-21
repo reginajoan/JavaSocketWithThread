@@ -2,7 +2,9 @@ package TestThread;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
+import java.net.ConnectException;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.concurrent.Callable;
 
 public class Task implements Callable<String> {
@@ -26,26 +28,42 @@ public class Task implements Callable<String> {
             return e.getMessage();
         }
     }
-    private String SendAndGetFromHLI(String dataDB) throws IOException, InterruptedIOException {
+    private String SendAndGetFromHLI(String dataDB) throws IOException {
         String print = null;
-        try{
-            clientSocket = new Socket(host,port);
-            clientSocket.getOutputStream().write(dataDB.getBytes("UTF-8"));
+        try {
+            clientSocket = new Socket(host, port);
+            clientSocket.getOutputStream().write(dataDB.getBytes("ASCII"));
             while (clientSocket.getInputStream().available() == 0) {
                 Thread.sleep(100L);
             }
             byte[] data = new byte[clientSocket.getInputStream().available()];
             int bytes = clientSocket.getInputStream().read(data, 0, data.length);
-            print = new String(data, 0, bytes, "UTF-8");//.substring(4,bytes);
-            System.out.println("from server : "+print);
+            print = new String(data, 0, bytes, "ASCII"); // .substring(4,bytes);
+            clientSocket.close();
+        } catch (ConnectException ce) {
+            System.out.println("Connection refused!");
+        } catch (SocketException se) {
+            System.out.println("Socket closed!");
         } catch (IOException ex) {
-            ex.printStackTrace();
+            if (clientSocket != null && !clientSocket.isClosed()) {
+                try {
+                    clientSocket.close();
+                } catch (IOException e) {
+                    e.printStackTrace(System.err);
+                }
+            }
         } catch (InterruptedException ie) {
             Thread.currentThread().interrupt();
         } catch (Exception e) {
             e.getMessage();
-        }finally {
-            clientSocket.close();
+        } finally {
+            try {
+                if (clientSocket != null && !clientSocket.isClosed()) {
+                    clientSocket.close();
+                }
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
         }
         return print;
     }

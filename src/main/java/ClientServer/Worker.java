@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -57,6 +58,10 @@ public class Worker extends RunningPrograms implements Runnable {
                     System.out.println("error null return");
                     System.out.println("Waiting transaction !!!");
                 }else if(dataFromHobis != null){
+                    System.out.println(clientSocket.getRemoteSocketAddress().toString());
+                    System.out.println(clientSocket.getInetAddress().getHostName());
+                    System.out.println("reply to : "+clientSocket.getInetAddress().getHostAddress());
+
                     clientSocket.getOutputStream().write(dataFromHobis.getBytes("UTF-8"));
                 }
                 List<String> printData = new ArrayList<String>();
