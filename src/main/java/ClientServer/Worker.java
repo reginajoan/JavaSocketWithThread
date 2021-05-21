@@ -4,6 +4,7 @@ import TestThread.PrintDATA;
 import TestThread.RunningPrograms;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
@@ -36,48 +37,52 @@ public class Worker extends RunningPrograms implements Runnable {
         InetAddress inet = clientSocket.getInetAddress();
         String net = inet.toString();
         int port = clientSocket.getPort();
-        System.out.println("inet : "+net.replace("/","") +"\nport : "+port);
+        System.out.println("inet : " + net.replace("/", "") + "\nport : " + port);
         try (InputStream is = clientSocket.getInputStream()) {
             byte[] buf = new byte[MAX_INPUT];
             while ((read = is.read(buf)) != -1) {
-                String dataDB = new String(buf, 0, read, "UTF-8");
-                System.out.println("received data\ntime : "+ new Date() +"\nlength data : " + dataDB.length());
+                // dataDB is where data save temporary
+                String dataDB = new String(buf, 0, read, "ASCII");
+                System.out.println("received data\ntime : " + new Date() + "\nlength data : " + dataDB.length());
                 System.out.println(dataDB);
                 String dataFromHobis = null;
-                //get and send data from data->hobis
-                /*
-                if(clientSocket.getInetAddress().toString().equals("/172.16.1.244") || clientSocket.getInetAddress().toString().equals("/172.16.1.243")){
-                    dataFromHobis = programs.getFromServer(dataDB);
-                }
-               else{
-                    dataFromHobis = RunningPrograms.RunningProgram1(dataDB, 10, "172.16.1.244",9400);
-                }*/
-                dataFromHobis = getFromServer(dataDB);
-                String fileName = dataDB.substring(18,26);
-                if(dataFromHobis == null){
-                    System.out.println("error null return");
-                    System.out.println("Waiting transaction !!!");
-                }else if(dataFromHobis != null){
-                    System.out.println(clientSocket.getRemoteSocketAddress().toString());
-                    System.out.println(clientSocket.getInetAddress().getHostName());
-                    System.out.println("reply to : "+clientSocket.getInetAddress().getHostAddress());
-
-                    clientSocket.getOutputStream().write(dataFromHobis.getBytes("UTF-8"));
+                // getFromServer is method for send data to HLi and save temporary in
+                // dataFromHobis
+                dataFromHobis = RunningPrograms.getFromServer(dataDB);
+                try {
+                    if (dataFromHobis != null) {
+                        System.out.println(
+                                "reply to : " + clientSocket.getRemoteSocketAddress().toString().replace("/", ""));
+                        System.out.println("message from hobis : " + dataFromHobis);
+                        clientSocket.getOutputStream().write(dataFromHobis.getBytes("ASCII"));
+                    }
+                    System.out.println("Success!");
+                } catch (Exception e) {
+                    System.out.println("data from hobis : " + dataFromHobis);
                 }
                 List<String> printData = new ArrayList<String>();
                 printData.add(dataDB);
                 printData.add(dataFromHobis);
-                PrintDATA.saveDataTxtTest(printData, dataDB.substring(18,26));
-                System.out.println("Waiting transaction !!!");
+                PrintDATA.saveDataTxtTest(printData, dataDB.substring(18, 26));
             }
-        }catch (SocketException se){
-            System.out.println("Reset Connection \nInternet Address : "+net.replace("/","") +" and port : "+port);
-        }catch (IOException ex) {
+            clientSocket.close();
+        } catch (ConnectException ce) {
+            System.out.println("Connection refused!");
+        } catch (SocketException se) {
+            System.out
+                    .println("Loss connection with Internet Address : " + net.replace("/", "") + " and port : " + port);
+        } catch (IOException ex) {
             ex.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
-        }finally {
-            clientSocket.close();
+        } finally {
+            if (clientSocket != null || !clientSocket.isClosed()) {
+                try {
+                    clientSocket.close();
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+            }
         }
     }
 }
