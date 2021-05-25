@@ -39,6 +39,7 @@ public class Task implements Callable<String> {
             byte[] data = new byte[clientSocket.getInputStream().available()];
             int bytes = clientSocket.getInputStream().read(data, 0, data.length);
             print = new String(data, 0, bytes, "ASCII"); // .substring(4,bytes);
+            System.out.println(print);
             clientSocket.close();
         } catch (ConnectException ce) {
             System.out.println("Connection refused!");

@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class TestAliveSocket {
-    private static String host = "172.16.1.33";
-    private static int port = 9000;
+    private static String host = "192.168.88.99";
+    private static int port = 32000;
     private static Socket clientSocket = null;
     private static String server = null;
     private static boolean connected = false;

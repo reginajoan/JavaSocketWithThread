@@ -16,7 +16,7 @@ public class RunningPrograms {
         String host = "";
         String data = null;
         NavigableMap<Object, Object> sort = new TreeMap<>().descendingMap();
-        sort.put(port, host);
+        sort.put(port, List.of("","")); // put host and port
 
         for(Map.Entry portAndHost : sort.entrySet()){
             for(String Host : (List<String>) portAndHost.getValue()){

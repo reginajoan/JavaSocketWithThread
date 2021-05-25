@@ -26,6 +26,7 @@ public class Worker extends RunningPrograms implements Runnable {
     public void run() {
         try {
             listenClientMessages();
+            ClientListen c = new ClientListen("host",0);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -60,7 +61,7 @@ public class Worker extends RunningPrograms implements Runnable {
                 } catch (Exception e) {
                     System.out.println("data from hobis : " + dataFromHobis);
                 }
-                List<String> printData = new ArrayList<String>();
+                List<String> printData = new ArrayList<>();
                 printData.add(dataDB);
                 printData.add(dataFromHobis);
                 PrintDATA.saveDataTxtTest(printData, dataDB.substring(18, 26));
@@ -85,4 +86,6 @@ public class Worker extends RunningPrograms implements Runnable {
             }
         }
     }
+
+
 }
